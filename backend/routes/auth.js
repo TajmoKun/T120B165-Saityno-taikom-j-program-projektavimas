@@ -21,7 +21,7 @@ router.post('/register', async(req,res) =>{
     if(isUniqueUser.rows.length > 0){
         return res.status(400).json({message: "User with the name or email already exists"});
     }
-
+ 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password,salt);
 
@@ -77,7 +77,7 @@ router.post('/login',async (req,res)=> {
 
         const genToken = {
             user:{
-                id: result.id
+                id: user.id
             }
         };
         jwt.sign(
