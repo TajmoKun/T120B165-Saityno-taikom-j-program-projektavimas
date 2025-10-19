@@ -14,8 +14,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/subforums',subforumRoutes);
-app.use('/api/posts',postRoutes);
-app.use('/api/comments',commentsRoutes);
+app.use('/api/subforums/:subforumId/posts',postRoutes);
+app.use('/api/subforums/:subforumId/:postId/comments',commentsRoutes);
 app.use('/api/messages', messagesRoutes);
 
 app.get('/',(req,res)=>{

@@ -1,11 +1,11 @@
 const auth = require('../middleware/auth');
 const db = require('../config/db');
 const express = require('express');
-const router = express.Router();
+const router = express.Router({mergeParams: true});
 
-router.get('/:title', async (req,res)=>{
+router.get('/', async (req,res)=>{
     try{
-            const {subforumId} = req.body;   // yea ik, dont comment on it
+            const subforumId = req.params.subforumId;
             const query = await db.query(`
             SELECT * FROM posts WHERE subforumId = $1
             `,[subforumId]);
@@ -18,17 +18,16 @@ router.get('/:title', async (req,res)=>{
     
 }); 
 
-router.get('/:title/:id', async (req,res)=>{
-
+router.get('/:id', async (req,res)=>{
     try{
-        const {postId} = req.body;
+        const postId = req.params.id;
         const query = await db.query(`
             SELECT * FROM posts WHERE id = $1
             `,[postId]);
         if(query.rowCount <= 0){
             return res.status(404).json({message: "*turns left* *turns right* dis place empty yo"});
         }
-        res.send(query.rows);
+        res.send(query.rows[0]);
     }catch(err){
         console.error(err);
         res.status(500).json({message: "Yo server broken, yo server broken, cmon big boi come fix up yo server"});
