@@ -35,9 +35,11 @@ router.get('/:id', async (req,res)=>{
 
 });
 
-router.post('/create', auth, async(req,res)=>{
+router.post('/create/', auth, async(req,res)=>{
     try{
-        const{subforumId, title, content} = req.body;
+        const subforumId = req.params.subforumId;
+        if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
+        const{title, content} = req.body;
         const query = await db.query(`
             INSERT INTO posts (title,content,userid,subforumid,createdat)
             VALUES ($1,$2,$3,$4,CURRENT_TIMESTAMP) RETURNING *
@@ -66,6 +68,8 @@ router.delete('/delete/:id',auth,async(req,res)=>{
 
 router.put('/edit/:id',auth,async(req,res)=>{
     try{
+        const subforumId = req.params.subforumId;
+        if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
         const {title, content} = req.body;
         const query = await db.query(`
             UPDATE posts

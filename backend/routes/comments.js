@@ -33,6 +33,8 @@ try{
 
 router.post('/create',auth,async (req,res)=>{
 try{
+    const subforumId = req.params.subforumId;
+    if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
     const{content,postid} = req.body;
     const query = await db.query(`
         INSERT INTO comments (content,userid,postid) VALUES ($1,$2,$3) RETURNING *
@@ -53,6 +55,9 @@ try{
 
 router.put('/edit/:id',auth,async (req,res)=>{
 try{
+    const subforumId = req.params.subforumId;
+    const postId = req.params.postId;
+    if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
     const {content} = req.body;
     const query = await db.query(`
             UPDATE comments
@@ -73,6 +78,8 @@ try{
 
 router.delete('/delete/:id',auth,async (req,res)=>{
 try{
+    const subforumId = req.params.subforumId;
+    if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
     const query = await db.query(`
         DELETE FROM comments WHERE id = $1 AND userid = $2 RETURNING *
         `,[req.params.id,req.user.id]);
