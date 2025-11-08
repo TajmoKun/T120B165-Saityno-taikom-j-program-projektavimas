@@ -1,0 +1,66 @@
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const db = require('../config/db');
+require('dotenv').config();
+
+const generateAccessToken = (userId) =>{
+    return jwt.sign(
+        {user: {id: userId}},
+        process.env.JWT_SECRET,
+        {expiresIn: '15m'}
+    );
+};
+
+const generateRefreshToken = (userId)=>{
+    return jwt.sign(
+        {user: {id: userId}},
+        process.env.REFRESH_TOKEN_SECRET,
+        {expiresIn: '7d'}
+    );
+};
+
+const saveRefreshToken = async (userId,refreshToken) => {
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate()+7);
+
+    await db.query(`
+        INSERT INTO refresh_tokens (token,userId,expiresat) VALUES ($1,$2,$3)
+        `,[refreshToken,userId,expiresAt]);
+};
+
+const verifyRefreshToken = async (token) =>{
+    try{
+        const decoded = jwt.verify(token,process.env.REFRESH_TOKEN_SECRET);
+
+        const result = await db.query(
+            `SELECT * FROM refresh_tokens WHERE token = $1 AND expiresat > NOW()`,
+            [token]
+        );
+        if(result.rows.length === 0){
+            return null;
+        }
+        return decoded.user.id;
+    }catch(err) {return null;}
+};
+
+const deleteRefreshToken = async (token) => {
+    await db.query(`DELETE FROM refresh_tokens WHERE token = $1`,[token]);
+};
+
+const deleteAllusersRefreshTokens = async (userId) =>{
+    await db.query(`DELETE FROM refresh_tokens WHERE userid = $1`,[userId]);
+};
+
+const cleanupExpiredTokens = async () =>{
+    await db.query(`DELETE FROM refresh_tokens WHERE expriesat < NOW()`);
+};
+
+module.exports = {
+    generateAccessToken,
+    generateRefreshToken,
+    saveRefreshToken,
+    verifyRefreshToken,
+    deleteAllusersRefreshTokens,
+    deleteRefreshToken,
+    cleanupExpiredTokens
+};

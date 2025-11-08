@@ -1,9 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 const auth = require('../middleware/auth');
+const{
+    generateAccessToken,
+    generateRefreshToken,
+    saveRefreshToken,
+    verifyRefreshToken,
+    deleteAllusersRefreshTokens,
+    deleteRefreshToken,
+    cleanupExpiredTokens
+} = require('../utils/tokenHelper');
+const { stripTypeScriptTypes } = require('module');
+
 require('dotenv').config();
 
 router.post('/register', async(req,res) =>{
@@ -30,24 +42,53 @@ router.post('/register', async(req,res) =>{
         [username,email,hashedPassword]
     );
 
-    const genToken = {
-        user:{
-            id: result.rows[0].id
-        }
-    };
+    const userId = result.rows[0].id;
 
-    jwt.sign(
-        genToken,
-        process.env.JWT_SECRET,
-        {expiresIn: '1h'},
-        (err,token) =>{
-            if(err) throw err;
-            res.json({token});
+    const accessToken = generateAccessToken(userId);
+    const refreshToken = generateRefreshToken(userId);
+
+    await saveRefreshToken(userId,refreshToken);
+    
+    res.json({
+        accessToken,
+        refreshToken,
+        expiresIn: '15m',
+        user:{
+            id:user.id,
+            username: user.username,
+            email: user.email
         }
-    );
+    });
     }catch(err){
         console.error(err.message);
         res.status(500).send("Server oopsies");
+    }
+});
+
+router.post('/refresh',async(req,res)=>{
+    try{
+        const {refreshToken} = req.body;
+        if(!refreshToken){
+            return res.status(401).json({message: 'Refresh token needed'});
+        }
+        const userId = await verifyRefreshToken(refreshToken);
+        if(!userId){
+            return res.status(403).json({message: 'invalid refresh token'});
+        }
+        const newAccessToken = generateAccessToken(userId);
+        const newRefreshToken = generateRefreshToken(userId);
+
+        await deleteRefreshToken(refreshToken);
+        await saveRefreshToken(userId,newRefreshToken);
+
+        res.json({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+            expiresIn: '15m'
+        });
+    }catch(err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
     }
 });
 
@@ -75,24 +116,49 @@ router.post('/login',async (req,res)=> {
             return res.status(400).json({message: "Password is not correct"});
         }
 
-        const genToken = {
-            user:{
-                id: user.id
+        const accessToken = generateAccessToken(user.id);
+        const refreshToken = generateRefreshToken(user.id);
+
+        await saveRefreshToken(user.id,refreshToken);
+
+        res.json({
+            accessToken,
+            refreshToken,
+            expiresIn: '15m',
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email
             }
-        };
-        jwt.sign(
-            genToken,
-            process.env.JWT_SECRET,
-            {expiresIn: '1h'},
-            (err,token) =>{
-                if(err) throw err;
-                res.json({token});
-            }
-        );
+    });
     }catch(err){
         console.error(err.message);
         res.status(500).send("Server error");
     }
 });
+
+router.post('/logout',auth,async(req,res)=>{
+    try{
+        const{refreshToken} = req.body;
+        if(refreshToken){
+            await deleteRefreshToken(refreshToken);
+        }
+        res.json({message: "Logged out"});
+    }catch(err){
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+});
+
+router.post('/logout-all', auth, async (req, res) => {
+    try {
+        await deleteAllUserRefreshTokens(req.user.id);
+        res.json({ message: 'Logged out from all devices' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+});
+
 
 module.exports = router;

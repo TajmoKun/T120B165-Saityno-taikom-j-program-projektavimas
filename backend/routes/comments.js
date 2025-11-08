@@ -1,13 +1,16 @@
 const auth = require('../middleware/auth');
 const db = require('../config/db');
 const express = require('express');
-const router = express.Router();
+const router = express.Router({mergeParams: true});
 
 router.get('/',async (req,res)=>{
 try{
+    const postId = req.params.postId;
+    const subforumId = req.params.subforumId;
+    if(!subforumId || !postId) return res.status(404).json({...postId,subforumId,message:"Subforum or Post ID doesnt exist"})
     const query = await db.query(`
-        SELECT * FROM comments
-        `);
+        SELECT * FROM comments WHERE postid = $1
+        `,[postId]);
     res.send(query.rows);
 }catch(err)
 {
@@ -19,10 +22,13 @@ try{
 
 router.get('/:id',async (req,res)=>{
 try{
+    const postId = req.params.postId;
+    const subforumId = req.params.subforumId;
+    if(!subforumId || !postId) return res.status(404).json({...postId,subforumId,message:"Subforum or Post ID doesnt exist"})
         const query = await db.query(`
         SELECT * FROM comments WHERE id = $1
         `,[req.params.id]);
-    res.send(query.rows);
+    res.send(query.rows[0]);
 }catch(err)
 {
     console.error(err);
@@ -33,12 +39,13 @@ try{
 
 router.post('/create',auth,async (req,res)=>{
 try{
+    const postId = req.params.postId;
     const subforumId = req.params.subforumId;
-    if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
+    if(!subforumId || !postId) return res.status(404).json({...postId,subforumId,message:"Subforum or Post ID doesnt exist"})
     const{content,postid} = req.body;
     const query = await db.query(`
         INSERT INTO comments (content,userid,postid) VALUES ($1,$2,$3) RETURNING *
-        `,[content,req.user.id,postid]);
+        `,[content,req.user.id,postId]);
     if(query.rowCount === 0 ){
         return res.status(400).json({message: "Failed to create a comment"});
     }
@@ -55,9 +62,9 @@ try{
 
 router.put('/edit/:id',auth,async (req,res)=>{
 try{
-    const subforumId = req.params.subforumId;
     const postId = req.params.postId;
-    if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
+    const subforumId = req.params.subforumId;
+    if(subforumId == null || postId == null) res.status(404).json({message:"Subforum or Post ID doesnt exist"})
     const {content} = req.body;
     const query = await db.query(`
             UPDATE comments
@@ -78,8 +85,9 @@ try{
 
 router.delete('/delete/:id',auth,async (req,res)=>{
 try{
+    const postId = req.params.postId;
     const subforumId = req.params.subforumId;
-    if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
+    if(subforumId == null || postId == null) res.status(404).json({message:"Subforum or Post ID doesnt exist"})
     const query = await db.query(`
         DELETE FROM comments WHERE id = $1 AND userid = $2 RETURNING *
         `,[req.params.id,req.user.id]);
