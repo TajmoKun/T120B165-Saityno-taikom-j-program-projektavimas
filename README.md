@@ -21,8 +21,7 @@ Registruotas sistemos narys galės:
 4.	Redaguoti ir ištrinti savo sukurtus diskusijas/įrašus/komentarus.
 5.	Peržiūrėti kitų sukurtas sub-forumus, diskusijas/įrašus, komentarus.
 6.	Suteikti reitingą diskusijai ir komentarams („Patinka“,“Nepatinka“);
-7.	Pranešti apie taisykles laužantį turinį.
-8.	Siųsti žinutes kitiems internetinės aplikacijos nariams.
+7.	Siųsti žinutes kitiems internetinės aplikacijos nariams.
 
 Administratorius galės:
 1.	Valdyti sub-forumus, diskusijas/įrašus, komentarus.

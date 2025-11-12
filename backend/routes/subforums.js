@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const auth = require('../middleware/auth');
-
+const suspended = require('../middleware/suspended')
 router.get('/',async (req,res)=>{
     try{
-        // gets the subforums with the forums creator user.
         const subForums = await db.query(`
             SELECT subforums.*, 
             users.username as creator_name,
@@ -16,7 +15,7 @@ router.get('/',async (req,res)=>{
             GROUP BY subforums.id, users.username
             ORDER BY subforums.createdAt DESC
             `);
-            res.json(subForums.rows);
+            res.json(subForums.rows)
     }catch(err){
         console.error(err);
         res.status(500).send('Server error');
@@ -44,7 +43,7 @@ router.get('/:id', async (req,res)=>{
     }
 });
 
-router.post('/create',auth, async (req,res)=>{
+router.post('/create',auth,suspended, async (req,res)=>{
     try{
         const { title, description} = req.body;
             if(!title || !description){
@@ -59,7 +58,6 @@ router.post('/create',auth, async (req,res)=>{
             [title,description,req.user.id]
         );
         res.status(201).json({...query.rows[0], message: 'created la subforum'});
-        
     }catch(err){
         console.error(err);
         res.status(500).send("Server Error");

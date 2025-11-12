@@ -41,9 +41,20 @@ router.get('/chatlogs/:friendsid',auth,async(req,res)=>{
         console.error(err);
         res.status(500).json({message:"server error"});
     }
-
 });
 
+router.post('/chatlogs/send/:friendsid',auth,async(req,res)=>{
+    const content = req.body.content;
+    try{
+        const query = await db.query(`
+            INSERT INTO messages (senderid,receiverid,content) VALUES ($1,$2,$3) RETURNING *
+            `,[req.user.id,req.params.friendsid,content]);
+        res.status(200).json(query.rows);
+    } catch(err){
+        console.error(err);
+        res.status(500).json({message: "Server error"});
+    }
 
+});
 
 module.exports = router;
