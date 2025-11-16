@@ -9,7 +9,10 @@ const postRoutes = require('./routes/posts');
 const commentsRoutes = require('./routes/comments');
 const messagesRoutes = require('./routes/messages');
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -17,6 +20,10 @@ app.use('/api/subforums',subforumRoutes);
 app.use('/api/subforums/:subforumId/posts',postRoutes);
 app.use('/api/subforums/:subforumId/:postId/comments',commentsRoutes);
 app.use('/api/messages', messagesRoutes);
+
+app.get('/health',(req,res)=>{
+  res.json({status: 'ok', timestamp: new Date()});
+});
 
 app.get('/',(req,res)=>{
   res.send("Hello World");
