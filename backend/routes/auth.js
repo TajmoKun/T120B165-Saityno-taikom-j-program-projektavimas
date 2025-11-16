@@ -54,7 +54,7 @@ router.post('/register', async(req,res) =>{
         refreshToken,
         expiresIn: '15m',
         user:{
-            id:user.id,
+            id:userId,
             username: user.username,
             email: user.email
         }
