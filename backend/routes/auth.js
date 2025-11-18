@@ -55,8 +55,8 @@ router.post('/register', async(req,res) =>{
         expiresIn: '15m',
         user:{
             id:userId,
-            username: user.username,
-            email: user.email
+            username: username,
+            email: email
         }
     });
     }catch(err){
