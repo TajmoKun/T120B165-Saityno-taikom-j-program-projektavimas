@@ -64,7 +64,7 @@ router.post('/create',auth,suspended, async (req,res)=>{
     }
 });
 
-router.delete('/delete/:id',auth,async(req,res)=>{
+router.delete('/delete/:id',auth,suspended,async(req,res)=>{
     try{
         const query = await db.query(`
             DELETE FROM subforums WHERE subforums.id = $1 AND subforums.userId = $2
@@ -79,9 +79,10 @@ router.delete('/delete/:id',auth,async(req,res)=>{
     }
 })
 
-router.put('/edit/:id',auth,async(req,res)=>{
+router.put('/edit/:id',auth,suspended,async(req,res)=>{
     try{
         const {title, description} = req.body;
+        if(!title || !description) {return res.status(400).json({message: "Yo, ya gotta put smt in for title and description to edit"});}
         const query = await db.query(`
             UPDATE subforums
             SET title = $1, description = $2

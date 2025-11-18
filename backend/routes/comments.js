@@ -2,6 +2,7 @@ const auth = require('../middleware/auth');
 const db = require('../config/db');
 const express = require('express');
 const router = express.Router({mergeParams: true});
+const suspended = require('../middleware/suspended')
 
 router.get('/',async (req,res)=>{
 try{
@@ -28,6 +29,7 @@ try{
         const query = await db.query(`
         SELECT * FROM comments WHERE id = $1
         `,[req.params.id]);
+    if(query.rows[0] === null) {res.status(404).json({message: "comment not found by such id"});}
     res.send(query.rows[0]);
 }catch(err)
 {
@@ -37,7 +39,7 @@ try{
 });
 
 
-router.post('/create',auth,async (req,res)=>{
+router.post('/create',auth,suspended,async (req,res)=>{
 try{
     const postId = req.params.postId;
     const subforumId = req.params.subforumId;

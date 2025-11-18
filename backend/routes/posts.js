@@ -2,6 +2,7 @@ const auth = require('../middleware/auth');
 const db = require('../config/db');
 const express = require('express');
 const router = express.Router({mergeParams: true});
+const suspended = require('../middleware/suspended')
 
 router.get('/', async (req,res)=>{
     try{
@@ -35,11 +36,12 @@ router.get('/:id', async (req,res)=>{
 
 });
 
-router.post('/create/', auth, async(req,res)=>{
+router.post('/create', auth,suspended, async(req,res)=>{
     try{
         const subforumId = req.params.subforumId;
         if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
         const{title, content} = req.body;
+    if(!title || !content) {res.status(400).json({message:"Title or Content missing"});}
         const query = await db.query(`
             INSERT INTO posts (title,content,userid,subforumid,createdat)
             VALUES ($1,$2,$3,$4,CURRENT_TIMESTAMP) RETURNING *
@@ -51,7 +53,7 @@ router.post('/create/', auth, async(req,res)=>{
     }
 });
 
-router.delete('/delete/:id',auth,async(req,res)=>{
+router.delete('/delete/:id',auth,suspended,async(req,res)=>{
     try{
         const query = await db.query(`
             DELETE FROM posts WHERE id = $1 AND userId = $2 RETURNING *
@@ -66,7 +68,7 @@ router.delete('/delete/:id',auth,async(req,res)=>{
     }
 });
 
-router.put('/edit/:id',auth,async(req,res)=>{
+router.put('/edit/:id',auth,suspended,async(req,res)=>{
     try{
         const subforumId = req.params.subforumId;
         if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
