@@ -152,7 +152,7 @@ router.post('/logout',auth,async(req,res)=>{
 
 router.post('/logout-all', auth, async (req, res) => {
     try {
-        await deleteAllUserRefreshTokens(req.user.id);
+        await deleteAllUsersRefreshTokens(req.user.id);
         res.json({ message: 'Logged out from all devices' });
     } catch (err) {
         console.error(err.message);

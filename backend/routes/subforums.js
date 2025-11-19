@@ -83,6 +83,10 @@ router.put('/edit/:id',auth,suspended,async(req,res)=>{
     try{
         const {title, description} = req.body;
         if(!title || !description) {return res.status(400).json({message: "Yo, ya gotta put smt in for title and description to edit"});}
+        const titleCheck = await db.query(`
+            SELECT * FROM subforums WHERE title = $1
+            `,[title]);
+        if(titleCheck.rowCount !== 0){return res.status(400).json({message: "this title is already taken"});}
         const query = await db.query(`
             UPDATE subforums
             SET title = $1, description = $2
