@@ -8,6 +8,7 @@ const subforumRoutes = require('./routes/subforums');
 const postRoutes = require('./routes/posts');
 const commentsRoutes = require('./routes/comments');
 const messagesRoutes = require('./routes/messages');
+const userControlRoutes = require('./routes/users');
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
@@ -20,6 +21,7 @@ app.use('/api/subforums',subforumRoutes);
 app.use('/api/subforums/:subforumId/posts',postRoutes);
 app.use('/api/subforums/:subforumId/:postId/comments',commentsRoutes);
 app.use('/api/messages', messagesRoutes);
+app.use('/api/userControl', userControlRoutes);
 
 app.get('/health',(req,res)=>{
   res.json({status: 'ok', timestamp: new Date()});
