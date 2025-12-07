@@ -1,0 +1,72 @@
+.subforums-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-height: calc(100vh - 8rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.subforums-title {
+  color: rgb(219, 18, 18);
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.subforums-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar styling */
+.subforums-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.subforums-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.subforums-list::-webkit-scrollbar-thumb {
+  background: rgb(54, 156, 54);
+  border-radius: 10px;
+}
+
+.subforums-list::-webkit-scrollbar-thumb:hover {
+  background: rgb(219, 86, 97);
+}
+
+.subforums-item {
+  margin-bottom: 0.5rem;
+}
+
+.subforums-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: rgb(54, 156, 54);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.subforums-button:hover {
+  background-color: rgb(219, 86, 97);
+  transform: translateX(5px);
+}
+
+.subforums-button:active {
+  transform: translateX(0);
+}

@@ -1,0 +1,58 @@
+.posts-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.posts-title {
+  color: rgb(219, 18, 18);
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.posts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.post-wrapper {
+  margin-bottom: 0.75rem;
+}
+
+.posts-item {
+  display: block;
+  padding: 1rem;
+  background-color: rgb(54, 156, 54);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.posts-item:hover {
+  background-color: rgb(219, 86, 97);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.posts-item:active {
+  transform: translateY(0);
+}
+
+.posts-item-selected {
+  background-color: rgb(219, 86, 97);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.comments-wrapper {
+  margin-top: 1rem;
+  padding-left: 2rem;
+  border-left: 3px solid rgb(78, 173, 197);
+}

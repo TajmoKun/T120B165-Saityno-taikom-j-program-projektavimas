@@ -1,0 +1,36 @@
+.comments-container {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.comments-title {
+  color: rgb(78, 173, 197);
+  font-size: 1.3rem;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.comments-item {
+  margin-bottom: 0.5rem;
+  display: block;
+  padding: 0.75rem;
+  background-color: white;
+  color: #333;
+  border-left: 3px solid rgb(54, 156, 54);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+}
+
+.comments-item:hover {
+  background-color: #e5e7eb;
+  border-left-color: rgb(219, 86, 97);
+}
