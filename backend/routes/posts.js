@@ -16,7 +16,6 @@ router.get('/', async (req,res)=>{
         console.error(err);
         res.status(500).json({message: "boah, dis server is BROKEN!"});
     }
-    
 }); 
 
 router.get('/:id', async (req,res)=>{
@@ -33,20 +32,20 @@ router.get('/:id', async (req,res)=>{
         console.error(err);
         res.status(500).json({message: "Yo server broken, yo server broken, cmon big boi come fix up yo server"});
     }
-
 });
 
 router.post('/create', auth,suspended, async(req,res)=>{
     try{
         const subforumId = req.params.subforumId;
-        if(subforumId == null) res.status(404).json({message:"Subforum ID doesnt exist"})
+        const findSubforum = await db.query(`SELECT * FROM subforums WHERE id = $1`,[subforumId]);
+        if(findSubforum.rowCount <=0) return res.status(404).json({message:"Subforum by this ID doesnt exist"});
         const{title, content} = req.body;
-    if(!title || !content) {res.status(400).json({message:"Title or Content missing"});}
+        if(!title || !content) return res.status(400).json({message:"Title or Content missing"});
         const query = await db.query(`
             INSERT INTO posts (title,content,userid,subforumid,createdat)
             VALUES ($1,$2,$3,$4,CURRENT_TIMESTAMP) RETURNING *
             `,[title,content,req.user.id,subforumId]);
-        res.status(201).json({...query.rows,message: "post has been created"});
+        res.status(201).json({...query.rows[0],message: "post has been created"});
     }catch(err){ 
         console.error(err);
         res.status(500).json({message:"insert funny quip bout the server being down"});

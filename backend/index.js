@@ -23,14 +23,6 @@ app.use('/api/subforums/:subforumId/:postId/comments',commentsRoutes);
 app.use('/api/messages', messagesRoutes);
 app.use('/api/userControl', userControlRoutes);
 
-app.get('/health',(req,res)=>{
-  res.json({status: 'ok', timestamp: new Date()});
-});
-
-app.get('/',(req,res)=>{
-  res.send("Hello World");
-});
-
 app.listen(PORT,()=>{
   console.log(`Server runnin on Port ${PORT}`);
 });

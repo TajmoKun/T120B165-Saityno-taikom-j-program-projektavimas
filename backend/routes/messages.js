@@ -26,6 +26,8 @@ router.get('/contacts',auth, async (req,res) =>{
 
 router.get('/chatlogs/:friendsid',auth,async(req,res)=>{
     try{
+        const checkFriend = await db.query(`SELECT * FROM users WHERE id = $1`,[req.params.friendsid]);
+        if(checkFriend.rowCount===0) {return res.status(404).json({message: "Friend by that ID not found"})}
         const query = await db.query(`
             SELECT
             messages.*
@@ -46,6 +48,8 @@ router.get('/chatlogs/:friendsid',auth,async(req,res)=>{
 router.post('/chatlogs/send/:friendsid',auth,async(req,res)=>{
     const content = req.body.content;
     try{
+        const checkFriend = await db.query(`SELECT * FROM users WHERE id = $1`,[req.params.friendsid]);
+        if(checkFriend.rowCount===0) {return res.status(404).json({message: "Friend by that ID not found"})}
         const query = await db.query(`
             INSERT INTO messages (senderid,receiverid,content) VALUES ($1,$2,$3) RETURNING *
             `,[req.user.id,req.params.friendsid,content]);

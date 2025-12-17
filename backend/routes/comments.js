@@ -29,7 +29,7 @@ try{
         const query = await db.query(`
         SELECT * FROM comments WHERE id = $1
         `,[req.params.id]);
-    if(query.rows[0] === null) {res.status(404).json({message: "comment not found by such id"});}
+    if(query.rowCount === 0) {return res.status(404).json({message: "comment not found by such id"});}
     res.send(query.rows[0]);
 }catch(err)
 {
@@ -44,14 +44,15 @@ try{
     const postId = req.params.postId;
     const subforumId = req.params.subforumId;
     if(!subforumId || !postId) return res.status(404).json({...postId,subforumId,message:"Subforum or Post ID doesnt exist"})
-    const{content,postid} = req.body;
+    const{content} = req.body;
+    if(!content) return res.status(400).json({message:"Content is required"});
     const query = await db.query(`
         INSERT INTO comments (content,userid,postid) VALUES ($1,$2,$3) RETURNING *
         `,[content,req.user.id,postId]);
     if(query.rowCount === 0 ){
         return res.status(400).json({message: "Failed to create a comment"});
     }
-    res.status(201).json({...query.rows, message:"Comment has been created"});
+    res.status(201).json({...query.rows[0], message:"Comment has been created"}); 
 
 }catch(err)
 {

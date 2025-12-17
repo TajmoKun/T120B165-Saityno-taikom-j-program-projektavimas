@@ -23,7 +23,7 @@ router.post('/register', async(req,res) =>{
     const {username,email,password} = req.body;
 
     if(!username || !email || !password){
-        return res.send(401).json({
+        return res.send(400).json({
             message: "Enter all of the neccessary credentials"
         });
     }
@@ -128,7 +128,8 @@ router.post('/login',async (req,res)=> {
             user: {
                 id: user.id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
     });
     }catch(err){

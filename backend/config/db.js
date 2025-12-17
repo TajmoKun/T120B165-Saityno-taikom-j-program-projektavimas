@@ -2,23 +2,13 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  },
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  user: String(process.env.DB_USER),
+  password: String(process.env.DB_PASSWORD),
+  host: String(process.env.DB_HOST),
+  port: Number(process.env.DB_PORT),
+  database: String(process.env.DB_NAME)
 });
  
-pool.on('connect', ()=>{
-  console.log('yer blutooth dvice has been connected soocessfully');
-});
-
-pool.on('error',(err)=>{
-  console.error('db error',err);
-});
-
 module.exports = {
   query: (text, params) => pool.query(text, params),
 };

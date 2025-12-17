@@ -5,6 +5,20 @@ const auth = require('../middleware/auth');
 const suspended = require('../middleware/suspended')
 const admin = require('../middleware/admin')
 
+router.get('/users', auth, admin, async (req, res) => {
+    try {
+        const result = await db.query(`
+            SELECT id, username, email, issuspended 
+            FROM users 
+            ORDER BY createdat DESC
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 router.post('/suspend/:id',auth,admin,async (req,res)=>{
     try {
         const userId = req.params.id;

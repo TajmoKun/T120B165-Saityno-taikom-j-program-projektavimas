@@ -4,12 +4,34 @@
   padding: 1rem;
 }
 
+.comments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
 .comments-title {
   color: rgb(78, 173, 197);
   font-size: 1.3rem;
-  margin: 0 0 0.75rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e0e0e0;
+  margin: 0;
+}
+
+.create-comment-btn {
+  padding: 0.4rem 0.75rem;
+  background-color: rgb(54, 156, 54);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.create-comment-btn:hover {
+  background-color: rgb(78, 173, 197);
 }
 
 .comments-list {
@@ -33,4 +55,86 @@
 .comments-item:hover {
   background-color: #e5e7eb;
   border-left-color: rgb(219, 86, 97);
+}
+
+.no-comments {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* Rating system */
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.rating-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #f0f4f8;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.rating-btn:hover {
+  border-color: #e0e0e0;
+}
+
+.rating-btn.active-like {
+  background: rgb(54, 156, 54);
+  color: white;
+}
+
+.rating-btn.active-dislike {
+  background: rgb(219, 86, 97);
+  color: white;
+}
+
+.rating-count {
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Edit/Delete controls */
+.item-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.edit-btn, .delete-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-btn {
+  background: rgb(78, 173, 197);
+  color: white;
+}
+
+.edit-btn:hover {
+  background: rgb(54, 156, 54);
+}
+
+.delete-btn {
+  background: rgb(219, 86, 97);
+  color: white;
+}
+
+.delete-btn:hover {
+  background: rgb(180, 50, 60);
 }
